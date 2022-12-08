@@ -30,7 +30,7 @@ public:
 
     int execute(string operation, vector<int> &data)
     {
-        return strategies[operation].execute(data);
+        return strategies[operation].execute();
     }
 
 private:
@@ -65,7 +65,7 @@ int main()
 
     vector<int> v = {1, 2, 3, 4, 5, 6, 7};
 
-    if (context.set_strategy('add'))
+    if (context.set_strategy("add"))
         std::cout << context.execute(v) else std::cerr << "Error: no valid strategy";
 
     Context context(new ConcreteAdd::execute(v));
