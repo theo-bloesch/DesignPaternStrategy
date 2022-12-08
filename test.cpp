@@ -9,17 +9,18 @@ using namespace std;
 class Strategy
 {
 public:
-    virtual int execute() = 0;
+    virtual int execute(vector<int> data) = 0;
 };
 
 class Context
 {
-    std::map<std::string, Strategy> strategies;
+    std::map<std::string, Strategy *> strategies;
+    string operation;
 
 public:
-    Context(Strategy *const s) : strategy(s) {}
+    Context() {}
 
-    void add_strategy(string name, Strategy &strategy)
+    void add_strategy(string name, Strategy *strategy)
     {
         strategies[name] = strategy;
     }
@@ -28,9 +29,16 @@ public:
         delete strategy;
     }
 
-    int execute(string operation, vector<int> &data)
+    int execute(vector<int> &data)
     {
-        return strategies[operation].execute();
+        return strategies[operation]->execute(data);
+    }
+
+    bool set_strategy(string operation)
+    {
+        // test if strategy exists
+        this->operation = operation;
+        return false;
     }
 
 private:
@@ -59,15 +67,15 @@ public:
 
 int main()
 {
-    Context context();
-    context.add_strategy("add", ConcreteAdd());
-    context.add_strategy("multiply", ConcreteSub());
+    Context context;
+
+    context.add_strategy("add", new ConcreteAdd);
+    context.add_strategy("multiply", new ConcreteSub);
 
     vector<int> v = {1, 2, 3, 4, 5, 6, 7};
 
     if (context.set_strategy("add"))
-        std::cout << context.execute(v) else std::cerr << "Error: no valid strategy";
+        std::cerr << "Error: no valid strategy";
 
-    Context context(new ConcreteAdd::execute(v));
-    context.contextInterface();
+    cout << context.execute(v) << endl;
 }
